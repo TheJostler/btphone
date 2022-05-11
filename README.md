@@ -22,7 +22,11 @@ At the moment I have only compiled a working GUI ELF executable binary for Limux
 
 However if you wish you can compile the program into your OS using the [pyinstaller](https://pypi.org/project/pyinstaller/) python module.
 
+I have created two directories in the btphone-gui directory, build_d for creating a one-folder bundle containing an executable. And build_f for compiling a single-file bundled executable
+
 ## Run
+
+If you are running a Linux machine
 
 Simply download the executable binary and run it...
 
