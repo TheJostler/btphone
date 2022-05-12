@@ -62,8 +62,7 @@ class Scan(QDialog):
         wordlist = set()
 
         url = "https://www.thephonebook.bt.com/Person/PersonSearch"
-        #url = "https://httpbin.org/get"
-        wordlist = "/usr/share/wordlists/aa_zz.txt"
+        wordlist = "./wordlists/aa_zz.txt"
         output = self.street.text() + ".html"
 
         HEADERS = {
