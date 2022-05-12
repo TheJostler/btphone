@@ -15,5 +15,5 @@ pip install <Module>
 and run this command inside this directory to compile:
 
 ```
-pyinstaller -F *.py --hidden-import pyi_splash --splash SplashV1.0.png -i SplashV1.0.png -n btphone-gui
+pyinstaller -D *.py --hidden-import pyi_splash --splash SplashV1.0.png -i SplashV1.0.png -n btphone-gui
 ```
