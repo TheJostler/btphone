@@ -1,35 +1,40 @@
 # This Python file uses the following encoding: utf-8
 import sys
+import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QDialog, QLabel)
-
-import urllib3
-import requests
-import sys
-from bs4 import BeautifulSoup
+from PySide6.QtGui import QIcon
 import argparse
-import webbrowser
-from colored import fg
+import subprocess
+
+version = "1.1"
 
 class Scan(QDialog):
     def __init__(self, parent=None):
         super(Scan, self).__init__(parent)
 
-        #Elements
         self.setWindowTitle("Btphone")
-        self.street = QLineEdit()
-        self.area = QLineEdit()
-        self.go = QPushButton("GO")
+        self.setWindowIcon(QIcon("res/SplashV" + version + ".png"))
 
         #Left Pane
         leftPane = QVBoxLayout( self )
-        leftPane.setSpacing(2)
+        leftPane.setSpacing(5)
+        LP_row0 = QHBoxLayout()
         LP_row1 = QHBoxLayout()
         LP_row2 = QHBoxLayout()
         LP_row3 = QHBoxLayout()
 
+        #Left Pane Stuff
+        self.street = QLineEdit()
+        self.area = QLineEdit()
+        self.go = QPushButton("GO")
+
         #Labels
         labStreet = QLabel("Street Name:")
         labArea = QLabel("Area/Postcode:")
+
+        #LP_row0
+        Title = QLabel("BTPhone version " + version + " By Josjuar Lister 2021-2022")
+        LP_row0.addWidget(Title)
 
         #LP_row1
         LP_row1.addWidget(labStreet)
@@ -43,85 +48,43 @@ class Scan(QDialog):
         LP_row3.addWidget(self.go)
 
         #Finalize Left Pane
+        leftPane.addLayout(LP_row0)
         leftPane.addLayout(LP_row1)
         leftPane.addLayout(LP_row2)
         leftPane.addLayout(LP_row3)
 
+        #Right Pane
+        rightPane = QVBoxLayout( self )
+        rightPane.setSpacing(5)
+
+        ##Left Pane Stuff goes here!
+
+        #Finalize Left Pane
+        #leftPane.adLayout()
+
         self.setLayout(leftPane)
+        self.setLayout(rightPane)
         self.go.clicked.connect(self.start)
 
     def start(self):
+
+        wordlist = "/usr/share/wordlists/aa_zz.txt"
+        output = self.street.text() + ".html"
         print("street: " + self.street.text())
         print("area: " + self.area.text())
-
-        txt_blue = fg('blue')
-        txt_green = fg('green')
-        txt_white = fg('white')
-        txt_red = fg('red')
-
-        wordlist = set()
-
-        url = "https://www.thephonebook.bt.com/Person/PersonSearch"
-        wordlist = "./wordlists/aa_zz.txt"
-        output = self.street.text() + ".html"
-
-        HEADERS = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36',
-        }
-
-        if output is not None:
-                print("output: " + output)
-                o = open(output, "a")
-                o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + output + "</h1><p>area: " + self.area.text() + "</p><p>street: " + self.street.text() + "</p>")
-
-        def http_status(r):
-            if r.status_code == 200:
-                    traffic = txt_green
-                    print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
-            elif r.status_code <= 400:
-                    traffic = txt_blue
-                    print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
-            else:
-                    traffic = txt_red
-                    print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
-
-            numsSeen = set()
-            num = set()
-            with open(wordlist) as f:
-                    list = f.read().splitlines()
-            for name in list:
-                    payload = {"Surname": name, "Location": self.area.text(), "Street": self.street.text()}
-                    print("Sending request for: " +name)
-                    r = requests.get(url, params=payload, headers=HEADERS)
-                    http_status(r)
-                    print('trying:\t\t' + txt_blue + name + txt_white, end='\r')
-                    ret = r.content.decode('utf-8')
-                    soup = BeautifulSoup(ret, "html.parser")
-                    nums = soup.select("a[href^=\"tel\"]")
-                    if nums is None:
-                        print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')
-                        break
-                    for num in nums:
-                            if num not in numsSeen:
-                                    print(num)
-                                    if output is not None:
-                                            o.write(str(num) + " | ")
-                                    numsSeen.add(num)
-                                    print(name, end='\r')
-                                    if output is not None:
-                                            o.write("returned by: " + name + "<br>")
-                    if args.output is not None:
-                            o.write("</body></html>")
-                            o.close()
-                            webbrowser.open_new_tab(args.output)
-
+        btphone = subprocess.Popen(["python3", "/home/josjuar/docs/scr/btphone/btphone.py", "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
 
 if __name__ == "__main__":
+    try:
+        import pyi_splash
+        pyi_splash.update_text("Yay!!")
+        pyi_splash.close()
+    except ImportError:
+        pass
 
-    print("Welcome")
-    print(f"Let's begin\n")
+    print("Welcome btphone version " + version + " By Josjuar Lister 2021-2022")
+    print(f"Let's Begin\n")
 
-    #run
     ins = QApplication([])
 
     parser=argparse.ArgumentParser(
@@ -134,6 +97,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', help='output html file and open')
     args=parser.parse_args()
 
+    #run
     window = Scan()
+    window.resize(300,200)
     window.show()
     sys.exit(ins.exec())
