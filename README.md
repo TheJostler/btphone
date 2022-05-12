@@ -17,7 +17,7 @@ However as interest in my project began to grow, I felt the need to create a GUI
 
 This application is still very much 'in development'.
 
-At the moment I have only compiled a working GUI ELF executable binary for Limux AMDx64 using ParrotSec OS.
+At the moment I have only compiled a working GUI ELF executable binary for Limux x86 64 bit using ParrotSec OS.
 
 However if you wish you can compile the program into your OS using the [pyinstaller](https://pypi.org/project/pyinstaller/) python module.
 
