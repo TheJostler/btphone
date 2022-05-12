@@ -111,6 +111,11 @@ if __name__ == "__main__":
 	parser.add_argument('-o', '--output', help='output html file and open')
 	args=parser.parse_args()
 
+if args.output is not None:
+	print("output: " + args.output)
+	o = open(args.output, "a")
+	o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + args.output + "</h1><p>area: " + args.area + "</p><p>street: " + args.street + "</p>")
+
 if args.street is not None:
         ##Wordlist scan
         if args.wordlist is not None:
