@@ -17,7 +17,7 @@ However as interest in my project began to grow, I felt the need to create a GUI
 
 This application is still very much 'in development'.
 
-At the moment I have only compiled a working GUI ELF executable binary for Limux x86 64 bit using ParrotSec OS.
+At the moment I have only compiled a working GUI ELF executable binary for Linux x86 using ParrotSec OS.
 
 However if you wish you can compile the program into your OS using the [pyinstaller](https://pypi.org/project/pyinstaller/) python module.
 
@@ -25,5 +25,5 @@ I have created two directories in the btphone-gui directory, build_d for creatin
 
 ## Run
 
-Simply run the btphone.py script in un your Python interrupter, or Use Pyinstaller to create the GUI application from inside the btphone-gui/build_d/f
+Simply run the btphone.py script in your Python interrupter, or Use Pyinstaller to create the GUI application from inside the btphone-gui/build_d/f
 
