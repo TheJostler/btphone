@@ -6,7 +6,6 @@ An open source, cross platform application for getting UK phone numbers from the
 
 If you would like to contribute to our project, please contact me by email at josj@wjaag.com
 
-Please see the Projects for current tasks.
 
 ## About
 
@@ -26,8 +25,5 @@ I have created two directories in the btphone-gui directory, build_d for creatin
 
 ## Run
 
-If you are running a Linux machine
+Simply run the btphone.py script in un your Python interrupter, or Use Pyinstaller to create the GUI application from inside the btphone-gui/build_d/f
 
-Simply download the executable binary and run it...
-
-Or simply run the btphone.py script in un your Python interrupter
