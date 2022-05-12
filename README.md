@@ -9,7 +9,7 @@ If you would like to contribute to our project, please contact me by email at jo
 
 ## About
 
-Originally I wrote this as a simple python script that uses urllib3 and beautiful soup libraries to brute-force telephone numbers from the by phone book. You pass the street, postcode, and a file containing surnames as arguments to the script, the script with then send a http 'Get' request to btphone book and filter out any phone numbers from the response.
+Originally I wrote this as a simple python script that uses urllib3 and beautiful soup libraries to brute-force telephone numbers from the by phone book. You pass the street, postcode, and a file containing surnames as arguments to the script, the script with then send a http request to btphone book and filter out any phone numbers from the response.
 
 However as interest in my project began to grow, I felt the need to create a GUI for the program to make the program easier to use. 
 
