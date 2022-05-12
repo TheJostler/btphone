@@ -111,6 +111,9 @@ if __name__ == "__main__":
 	parser.add_argument('-o', '--output', help='output html file and open')
 	args=parser.parse_args()
 
+else:
+    exit(1)
+
 if args.output is not None:
 	print("output: " + args.output)
 	o = open(args.output, "a")
