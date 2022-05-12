@@ -119,6 +119,5 @@ if args.street is not None:
             sys.exit(scan_wordlist(args.street, args.area, args.wordlist, args.output))
 
         ##One person scan
-        else:
-            if args.surname is not None:
+        elif args.surname is not None:
                 sys.exit(scan_surname)
