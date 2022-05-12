@@ -68,11 +68,11 @@ class Scan(QDialog):
 
     def start(self):
 
-        wordlist = "/usr/share/wordlists/aa_zz.txt"
+        wordlist = "res/aa_zz.txt"
         output = self.street.text() + ".html"
         print("street: " + self.street.text())
         print("area: " + self.area.text())
-        btphone = subprocess.Popen(["python3", "/home/josjuar/docs/scr/btphone/btphone.py", "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
+        btphone = subprocess.Popen(["python3", "res/btphone.py", "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
 
 if __name__ == "__main__":
     try:
