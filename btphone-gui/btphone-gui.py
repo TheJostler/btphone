@@ -4,7 +4,13 @@ import os
 from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QDialog, QLabel)
 from PySide6.QtGui import QIcon
 import argparse
-import subprocess
+import urllib3
+import requests
+from bs4 import BeautifulSoup
+import argparse
+import webbrowser
+from colored import fg
+
 
 version = "1.1"
 
@@ -66,13 +72,96 @@ class Scan(QDialog):
         self.setLayout(rightPane)
         self.go.clicked.connect(self.start)
 
-    def start(self):
+    txt_blue = fg('blue')
+    txt_green = fg('green')
+    txt_white = fg('white')
+    txt_red = fg('red')
 
-        wordlist = "res/aa_zz.txt"
-        output = self.street.text() + ".html"
-        print("street: " + self.street.text())
-        print("area: " + self.area.text())
-        btphone = subprocess.Popen(["python3", "res/btphone.py", "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
+    url = "https://www.thephonebook.bt.com/Person/PersonSearch"
+
+    HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'}
+
+    def http_status(r):
+        if r.status_code == 200:
+            traffic = txt_green
+            print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
+        elif r.status_code <= 400:
+            traffic = txt_blue
+            print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
+        else:
+            traffic = txt_red
+            print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
+
+    def scan_wordlist(street, area, wordlist, output):
+        numsSeen = set()
+        num = set()
+        with open(wordlist) as f:
+            list = f.read().splitlines()
+        for name in list:
+            payload = {"Surname": name, "Location": area, "Street": street}
+            try:
+                r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+            except:
+                print(txt_blue + "  (info)\t" + txt_white + name + " Timed out, retrying")
+                try:
+                    r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+                except:
+                    print(txt_blue + "  (info)\t" + txt_white + name + " Timed out, twice, retrying")
+                    try:
+                        r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+                    except:
+                        print(txt_red + "  (warn)\t" + txt_white + name + " Timed out, tree times, skipping")
+                        pass
+            http_status(r)
+            print('trying:\t\t' + txt_blue + name + txt_white, end='\r')
+            ret = r.content.decode('utf-8')
+            soup = BeautifulSoup(ret, "html.parser")
+            nums = soup.select("a[href^=\"tel\"]")
+            for num in nums:
+                if num not in numsSeen:
+                    print(str(num) + " returned by: " + str(name))
+                    if output is not None:
+                        o.write(str(num) + " | ")
+                    numsSeen.add(num)
+                    print(name, end='\r')
+                    if output is not None:
+                        o.write("returned by: " + name + "<br>")
+        if output is not None:
+            o.write("</body></html>")
+            o.close()
+            webbrowser.open_new_tab(output)
+
+    def scan_surname(street, area, surname, output):
+        payload = {"Surname": surname, "Location": area, "Street": street}
+        try:
+            r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+        except:
+            print(txt_blue + "  (info)\t" + txt_white + name + " Timed out, retrying")
+            try:
+                r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+            except:
+                print(txt_blue + "  (info)\t" + txt_white + name + " Timed out, twice, retrying")
+                try:
+                    r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
+                except:
+                    print(txt_red + "  (warn)\t" + txt_white + name + " Timed out, tree times, skipping")
+                    pass
+        http_status(r)
+        ret = r.content.decode('utf-8')
+
+        soup = BeautifulSoup(ret, "html.parser")
+        nums = soup.select("a[href^=\"tel\"]")
+        numsSeen = set()
+        for num in nums:
+            if num not in numsSeen:
+                print(num)
+                if output is not None:
+                    o.write(str(num))
+                    o.write("</body></html>")
+                    o.close()
+                    webbrowser.open_new_tab(output)
+        else:
+            print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')
 
 if __name__ == "__main__":
     try:
