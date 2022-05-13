@@ -54,11 +54,12 @@ class Scan(QDialog):
 
     def start(self):
 
-        wordlist = "/usr/share/wordlists/aa_zz.txt"
+        wordlist = os.path.dirname(__file__) + "/res/aa_zz.txt"
+        start = os.path.dirname(__file__) + "/res/btphone.py"
         output = self.street.text() + ".html"
         print("street: " + self.street.text())
         print("area: " + self.area.text())
-        btphone = subprocess.Popen(["python3", "/home/josjuar/docs/scr/btphone/btphone.py", "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
+        btphone = subprocess.Popen(["python3", start, "-w", wordlist, "-s", self.street.text(), "-a", self.area.text(), "-o", output], shell=False)
 
 if __name__ == "__main__":
     try:
