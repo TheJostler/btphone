@@ -53,7 +53,8 @@ def scan_wordlist(street, area, wordlist, output):
         ret = r.content.decode('utf-8')
         soup = BeautifulSoup(ret, "html.parser")
         nums = soup.select("a[href^=\"tel\"]")
-        for num in nums:
+        for element in nums:
+            num = element.decode_contents()
             if num not in numsSeen:
                 print(str(num) + " returned by: " + str(name))
                 if output is not None:
@@ -66,6 +67,7 @@ def scan_wordlist(street, area, wordlist, output):
         o.write("</body></html>")
         o.close()
         webbrowser.open_new_tab(output)
+    return 0
 
 def scan_surname(street, area, surname, output):
     payload = {"Surname": surname, "Location": area, "Street": street}
@@ -87,17 +89,18 @@ def scan_surname(street, area, surname, output):
 
     soup = BeautifulSoup(ret, "html.parser")
     nums = soup.select("a[href^=\"tel\"]")
-    numsSeen = set()
-    for num in nums:
-    	if num not in numsSeen:
-    		print(num)
-    		if output is not None:
-    			o.write(str(num))
-    			o.write("</body></html>")
-    			o.close()
-    			webbrowser.open_new_tab(output)
+    if (len(nums) > 1):
+        for element in nums:
+            num = element.decode_contents()
+            print(num)
+            if output is not None:
+                o.write(str(num))
+                o.write("</body></html>")
+                o.close()
+                webbrowser.open_new_tab(output)
     else:
     	print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')
+    return 0
 
 if __name__ == "__main__":
 				
@@ -126,4 +129,4 @@ if args.street is not None:
 
         ##One person scan
         elif args.surname is not None:
-                sys.exit(scan_surname)
+                sys.exit(scan_surname(args.street, args.area, args.surname, args.output))
