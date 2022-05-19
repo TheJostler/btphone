@@ -46,24 +46,32 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KH
 # A function for outputing the http response to make sure that bt.com is still talking back to us!
 # Pass the http response as the argument 'r'
 def http_status(r):
+    # Generally a http status code higher than 200 is bad news
 	if r.status_code == 200:
 		traffic = txt_green
 		print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
 	elif r.status_code <= 400:
 		traffic = txt_blue
-		print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
+		print(txt_red + "  (warn)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
 	else:
 		traffic = txt_red
-		print(txt_blue + "  (Info)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
+		print(txt_red + "  (warn)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
 
 # Start scanning using a wordlist of names to bruteforce phone numbers
 def scan_wordlist(street, area, wordlist, output):
+    # Define variables
     numsSeen = set()
     num = set()
+
+    # Open wordlist
     with open(wordlist) as f:
         list = f.read().splitlines()
     for name in list:
+
+        # Here is where we package our parameters that we will send to 'bt.com', they are put into an array that will be passed to 'requests.get' as params
         payload = {"Surname": name, "Location": area, "Street": street}
+
+        # We will wait 15 seconds for a response and try again, if we fail to get a response 3 times we skip that name and move on.
         try:
             r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
         except:
@@ -77,13 +85,24 @@ def scan_wordlist(street, area, wordlist, output):
                 except:
                     print(txt_red + "  (warn)\t" + txt_white + name + " Timed out, tree times, skipping")
                     pass
+
+        # Print http status to terminal
         http_status(r)
         print('trying:\t\t' + txt_blue + name + txt_white, end='\r')
+
+        # Decode response from binary into UTF-8 charcters
         ret = r.content.decode('utf-8')
+
+        # Use Beautiful Soup Module to parse html then find and extract the phone number
         soup = BeautifulSoup(ret, "html.parser")
         nums = soup.select("a[href^=\"tel\"]")
+
         for element in nums:
+
+            # Extract inner content of 'html' <a> tags that are found
             num = element.decode_contents()
+
+            # We want to remember numbers we have seen before so that we don't get repeats
             if num not in numsSeen:
                 print(str(num) + " returned by: " + str(name))
                 if output is not None:
@@ -92,15 +111,22 @@ def scan_wordlist(street, area, wordlist, output):
                 print(name, end='\r')
                 if output is not None:
                     o.write("returned by: " + name + "<br>")
+    # If outputing to a 'html' file, append closing tabs( </...> ) to the end of the file
     if output is not None:
         o.write("</body></html>")
         o.close()
         webbrowser.open_new_tab(output)
+
+    # Success
     return 0
 
 # Start a scan only once using a single surname
 def scan_surname(street, area, surname, output):
+
+    # Here is where we package our parameters that we will send to 'bt.com', they are put into an array that will be passed to 'requests.get' as params
     payload = {"Surname": surname, "Location": area, "Street": street}
+
+    # We will wait 15 seconds for a response and try again, if we fail to get a response 3 times we skip that name and move on.
     try:
         r = requests.get(url, params=payload, headers=HEADERS, timeout=15)
     except:
@@ -114,19 +140,32 @@ def scan_surname(street, area, surname, output):
             except:
                 print(txt_red + "  (warn)\t" + txt_white + name + " Timed out, tree times, skipping")
                 pass
+
+    # Print http status to terminal
     http_status(r)
+    
+
+    # Decode response from binary into UTF-8 charcters
     ret = r.content.decode('utf-8')
 
+    # Use Beautiful Soup Module to parse html then find and extract the phone number
     soup = BeautifulSoup(ret, "html.parser")
     nums = soup.select("a[href^=\"tel\"]")
+
+    # If there we have found a phone number
     if (len(nums) > 1):
         for element in nums:
+
+            # Extract inner content of 'html' <a> tags that are found
             num = element.decode_contents()
             print(num)
+
+            # If outputing to a 'html' file, append closing tabs( </...> ) to the end of the file
             if output is not None:
                 o.write(str(num))
                 o.write("</body></html>")
                 o.close()
+                # Finally open the default webbrowser and show the page
                 webbrowser.open_new_tab(output)
     else:
     	print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')

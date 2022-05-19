@@ -1,6 +1,6 @@
 1. Copy the btphone.py code into btphone-gui.py (Don't start sub processes anymore)
 
-(DONE)2. Extract the phone numbers from the <a> tags using Python Beautiful Soup Module and store them into a variable.
+(DONE) 2. Extract the phone numbers from the <a> tags using Python Beautiful Soup Module and store them into a variable.
 
 3. Save "Scan Results" into a Serialised Multidimentional Array using the Python Pickle module
 
