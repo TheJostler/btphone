@@ -15,6 +15,7 @@
 # I am currently trying to create a gui app which can store the phone numbers for later use.
 
 # I have a working gui wrapper which starts this script as a sub-process
+# it can be found in the btphone-gui directory and is called: btphone-start-sub-process.py
 
 # LICENSE
 # Copyright (c) 2022 Josjuar Lister

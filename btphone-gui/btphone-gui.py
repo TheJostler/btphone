@@ -11,7 +11,6 @@ import argparse
 import webbrowser
 from colored import fg
 
-
 version = "1.1"
 
 class Scan(QDialog):
