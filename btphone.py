@@ -1,8 +1,22 @@
 #!/usr/bin/env python
 
-# Here I will put a proper good comment
+# THIS SOFTWARE IS CURRENTLY IN DEVELOPMENT! 
 # 
+# To keep tack of the development of btphone or if you would like to contribute
+# please visit:
+# 
+# https://github.com/thejostler/btphone
+# 
+# Please contact me by emailing: josj@wjaag.com
+#
+# Here is the initial version of my script
+# it uses area information and surnames to find phone numbers from the bt phonebook
+# it outputs the phone numbers to a html file and opens it with the default web browser
+# I am currently trying to create a gui app which can store the phone numbers for later use.
 
+# I have a working gui wrapper which starts this script as a sub-process
+
+# LICENSE
 # Copyright (c) 2022 Josjuar Lister
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
