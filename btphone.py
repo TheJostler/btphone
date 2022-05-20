@@ -188,31 +188,30 @@ def scan_surname(street, area, surname, output):
 
 # Initialize -- Start Here! Here is where we parse command line argyments.
 if __name__ == "__main__":
-	parser=argparse.ArgumentParser(
-		description='''Here is my lovelly little python script to bruteforce phonenumbers from the bt phonebook :-). ''',
-		epilog="""Josjuar Lister 2021-2022""")
-	parser.add_argument('-n', '--surname', help='specify surname')
-	parser.add_argument('-a', '--area', help='Area Town or Postcode', required=True)
-	parser.add_argument('-s', '--street', help='specify street', required=True)
-	parser.add_argument('-w', '--wordlist', help='input wordlist file')
-	parser.add_argument('-o', '--output', help='output html file and open')
-    
+    parser=argparse.ArgumentParser(
+        description='''Here is my lovelly little python script to bruteforce phonenumbers from the bt phonebook :-). ''',
+        epilog="""Josjuar Lister 2021-2022""")
+    parser.add_argument('-n', '--surname', help='specify surname')
+    parser.add_argument('-a', '--area', help='Area Town or Postcode', required=True)
+    parser.add_argument('-s', '--street', help='specify street', required=True)
+    parser.add_argument('-w', '--wordlist', help='input wordlist file')
+    parser.add_argument('-o', '--output', help='output html file and open')
+
     # To use arguments parsed by here call 'args.<argument>'
-	args=parser.parse_args()
-else:
-    exit(1)
+    args=parser.parse_args()
 
-# If we want to output to a html file, ...
-if args.output is not None:
-	print("output: " + args.output)
-	o = open(args.output, "a")
-	o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + args.output + "</h1><p>area: " + args.area + "</p><p>street: " + args.street + "</p>")
+    # If we want to output to a html file, ...
+    if args.output is not None:
+        print("output: " + args.output)
+        o = open(args.output, "a")
+        o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + args.output + "</h1><p>area: " + args.area + "</p><p>street: " + args.street + "</p>")
 
-if args.street is not None:
-    ##Wordlist scan
+    ##Wordlist scan    
     if args.wordlist is not None:
         sys.exit(scan_wordlist(args.street, args.area, args.wordlist, args.output))
 
     ##One person scan
     elif args.surname is not None:
         sys.exit(scan_surname(args.street, args.area, args.surname, args.output))
+else:
+    exit(1)
