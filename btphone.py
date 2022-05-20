@@ -197,7 +197,7 @@ if __name__ == "__main__":
     parser.add_argument('-w', '--wordlist', help='input wordlist file')
     parser.add_argument('-o', '--output', help='output html file and open')
 
-    # To use arguments parsed by here call 'args.<argument>'
+    # To use arguments parsed here call 'args.<argument>'
     args=parser.parse_args()
 
     # If we want to output to a html file, ...

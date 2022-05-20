@@ -38,13 +38,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import sys
+import os
 import urllib3
 import requests
-import sys
 from bs4 import BeautifulSoup
 import argparse
 import webbrowser
 from colored import fg
+
+# Our app version
+version = "1.1"
 
 # include these variables in a print() function to output different clours to your terminal
 txt_blue = fg('blue')
@@ -61,6 +65,7 @@ HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KH
 # A function for outputing the http response to make sure that bt.com is still talking back to us!
 # Pass the http response as the argument 'r'
 def http_status(r):
+
     # Generally a http status code higher than 200 is bad news
 	if r.status_code == 200:
 		traffic = txt_green
@@ -74,6 +79,7 @@ def http_status(r):
 
 # Start scanning using a wordlist of names to bruteforce phone numbers
 def scan_wordlist(street, area, wordlist, output):
+
     # Define variables
     numsSeen = set()
     num = set()
@@ -186,32 +192,72 @@ def scan_surname(street, area, surname, output):
     	print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')
     return 0
 
-# Initialize -- Start Here! Here is where we parse command line argyments.
+# Initialize -- Start Here!
 if __name__ == "__main__":
+
+    # Here is a little hack to make the splash screen close once the program has started 
+    #   - (be sure to specify '--hidden-import pyi_splash' when compiling) with pyinstaller
+    try:
+        import pyi_splash
+        pyi_splash.update_text("Yay!!")
+        pyi_splash.close()
+    except ImportError:
+        pass
+
+    # Welcome message
+    printversion = "Welcome btphone version " + version + " By Josjuar Lister 2021-2022"
+    print(printversion)
+    print(f"Let's Begin\n")
+    
+    # IN DEVELOPMENT MESSAGE
+    print("THIS PROGRAM IS CURRENTLY IN DEVELOPMENT")
+
+    # Parse command line arguments
     parser=argparse.ArgumentParser(
-        description='''Here is my lovelly little python script to bruteforce phonenumbers from the bt phonebook :-). ''', 
-        epilog="""Josjuar Lister 2021-2022""")
+        description=printversion, 
+        epilog="""For more information please vist: https://github.com/thejostler/btphone""")
     parser.add_argument('-n', '--surname', help='specify surname')
-    parser.add_argument('-a', '--area', help='Area Town or Postcode', required=True)
-    parser.add_argument('-s', '--street', help='specify street', required=True)
+    parser.add_argument('-a', '--area', help='Area Town or Postcode', required=False)
+    parser.add_argument('-s', '--street', help='specify street', required=False)
     parser.add_argument('-w', '--wordlist', help='input wordlist file')
     parser.add_argument('-o', '--output', help='output html file and open')
 
-    # To use arguments parsed by here call 'args.<argument>'
+    # To use arguments parsed here call 'args.<argument>'
     args=parser.parse_args()
 
-    # If we want to output to a html file, ...
-    if args.output is not None:
-        print("output: " + args.output)
-        o = open(args.output, "a")
-        o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + args.output + "</h1><p>area: " + args.area + "</p><p>street: " + args.street + "</p>")
+    # If there are no recognised arguments given, run the GUI, else run terminal only
+    if (args is not None):
+        ## Terminal Only
+        # If we want to output to a html file, ...
+        if args.output is not None:
+            print("output: " + args.output)
+            o = open(args.output, "a")
+            o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + args.output + "</h1><p>area: " + args.area + "</p><p>street: " + args.street + "</p>")
 
-    ##Wordlist scan
-    if args.wordlist is not None:
-        sys.exit(scan_wordlist(args.street, args.area, args.wordlist, args.output))
+        ##Wordlist scan
+        if args.wordlist is not None:
+            sys.exit(scan_wordlist(args.street, args.area, args.wordlist, args.output))
 
-    ##One person scan
-    elif (args.surname is not None):
-        sys.exit(scan_surname(args.street, args.area, args.surname, args.output))
+        ##One person scan
+        elif (args.surname is not None):
+            sys.exit(scan_surname(args.street, args.area, args.surname, args.output))
+    else:
+        #GUI
+
+        # import needed modules for the GUI App
+        from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QDialog, QLabel)
+        from PySide6.QtGui import QIcon
+
+        #Start a QApplication instance called MainActivity
+        MainActivity = QApplication([])
+
+        # Create a window from Scan class and run it
+        window = Scan()
+        window.resize(300,200)
+        window.show()
+
+        # Here we start our application loop
+        sys.exit(MainActivity.exec())
 else:
     exit(1)
+exit(0)
