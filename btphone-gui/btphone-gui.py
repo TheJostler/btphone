@@ -188,7 +188,9 @@ def scan_surname(street, area, surname, output):
 
 # Initialize -- Start Here! Here is where we parse command line argyments.
 if __name__ == "__main__":
-    parser=argparse.ArgumentParser(description='''Here is my lovelly little python script to bruteforce phonenumbers from the bt phonebook :-). ''', epilog="""Josjuar Lister 2021-2022""")
+    parser=argparse.ArgumentParser(
+        description='''Here is my lovelly little python script to bruteforce phonenumbers from the bt phonebook :-). ''', 
+        epilog="""Josjuar Lister 2021-2022""")
     parser.add_argument('-n', '--surname', help='specify surname')
     parser.add_argument('-a', '--area', help='Area Town or Postcode', required=True)
     parser.add_argument('-s', '--street', help='specify street', required=True)
