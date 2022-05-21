@@ -46,6 +46,9 @@ from bs4 import BeautifulSoup
 import argparse
 import webbrowser
 from colored import fg
+#For gui
+from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QDialog, QLabel)
+from PySide6.QtGui import QIcon
 
 # Our app version
 version = "1.1"
@@ -192,6 +195,64 @@ def scan_surname(street, area, surname, output):
     	print(txt_red + '(Notice)\t' + txt_white + 'No phone numbers returned')
     return 0
 
+class Main(QDialog):
+    def __init__(self, parent=None):
+        super(Main, self).__init__(parent)
+
+        self.setWindowTitle("Btphone")
+        self.setWindowIcon(QIcon("res/SplashV" + version + ".png"))
+
+        #Left Pane
+        leftPane = QVBoxLayout( self )
+        leftPane.setSpacing(5)
+        LP_row0 = QHBoxLayout()
+        LP_row1 = QHBoxLayout()
+        LP_row2 = QHBoxLayout()
+        LP_row3 = QHBoxLayout()
+
+        #Left Pane Stuff
+        self.street = QLineEdit()
+        self.area = QLineEdit()
+        self.go = QPushButton("GO")
+
+        #Labels
+        labStreet = QLabel("Street Name:")
+        labArea = QLabel("Area/Postcode:")
+
+        #LP_row0
+        Title = QLabel("BTPhone version " + version + " By Josjuar Lister 2021-2022")
+        LP_row0.addWidget(Title)
+
+        #LP_row1
+        LP_row1.addWidget(labStreet)
+        LP_row1.addWidget(self.street)
+
+        #LP_row2
+        LP_row2.addWidget(labArea)
+        LP_row2.addWidget(self.area)
+
+        #LP_row3
+        LP_row3.addWidget(self.go)
+
+        #Finalize Left Pane
+        leftPane.addLayout(LP_row0)
+        leftPane.addLayout(LP_row1)
+        leftPane.addLayout(LP_row2)
+        leftPane.addLayout(LP_row3)
+
+        #Right Pane
+        rightPane = QVBoxLayout( self )
+        rightPane.setSpacing(5)
+
+        ##Left Pane Stuff goes here!
+
+        #Finalize Left Pane
+        #leftPane.adLayout()
+
+        self.setLayout(leftPane)
+        self.setLayout(rightPane)
+        self.go.clicked.connect(self.start)
+
 # Initialize -- Start Here!
 if __name__ == "__main__":
 
@@ -206,11 +267,6 @@ if __name__ == "__main__":
 
     # Welcome message
     printversion = "Welcome btphone version " + version + " By Josjuar Lister 2021-2022"
-    print(printversion)
-    print(f"Let's Begin\n")
-    
-    # IN DEVELOPMENT MESSAGE
-    print("THIS PROGRAM IS CURRENTLY IN DEVELOPMENT")
 
     # Parse command line arguments
     parser=argparse.ArgumentParser(
@@ -224,9 +280,17 @@ if __name__ == "__main__":
 
     # To use arguments parsed here call 'args.<argument>'
     args=parser.parse_args()
+    
+    print(printversion)
+    print(f"Let's Begin\n")
+    
+    # IN DEVELOPMENT MESSAGE
+    print("THIS PROGRAM IS CURRENTLY IN DEVELOPMENT")
 
     # If there are no recognised arguments given, run the GUI, else run terminal only
     if (args is not None):
+        print("Terminal Only")
+        print(args)
         ## Terminal Only
         # If we want to output to a html file, ...
         if args.output is not None:
@@ -244,15 +308,11 @@ if __name__ == "__main__":
     else:
         #GUI
 
-        # import needed modules for the GUI App
-        from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QHBoxLayout, QDialog, QLabel)
-        from PySide6.QtGui import QIcon
-
         #Start a QApplication instance called MainActivity
         MainActivity = QApplication([])
 
         # Create a window from Scan class and run it
-        window = Scan()
+        window = Main()
         window.resize(300,200)
         window.show()
 
