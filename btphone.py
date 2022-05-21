@@ -121,7 +121,7 @@ def scan_wordlist(street, area, wordlist, output):
             if num not in numsSeen:
                 print(str(num) + " returned by: " + str(name))
                 if output is not None:
-                    o.write(str(num) + " | ")
+                    o.write(str(element) + " | ")
                 numsSeen.add(num)
                 print(name, end='\r')
                 if output is not None:
