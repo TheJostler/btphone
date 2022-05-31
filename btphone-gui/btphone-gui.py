@@ -251,7 +251,15 @@ class Main(QDialog):
 
         self.setLayout(leftPane)
         self.setLayout(rightPane)
-        self.go.clicked.connect(self.start)
+        self.go.clicked.connect(self.start_gui)
+
+    def start_gui(self):
+
+        wordlist = os.path.dirname(__file__) + "/res/aa_zz.txt"
+        output = self.street.text() + ".html"
+        print("street: " + self.street.text())
+        print("area: " + self.area.text())
+        return scan_wordlist(self.street, self.area, wordlist, output)
 
 # Initialize -- Start Here!
 if __name__ == "__main__":
@@ -288,9 +296,8 @@ if __name__ == "__main__":
     print("THIS PROGRAM IS CURRENTLY IN DEVELOPMENT")
 
     # If there are no recognised arguments given, run the GUI, else run terminal only
-    if (args is not None):
+    if (args.street and args.area is None):
         print("Terminal Only")
-        print(args)
         ## Terminal Only
         # If we want to output to a html file, ...
         if args.output is not None:
