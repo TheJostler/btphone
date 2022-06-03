@@ -81,19 +81,25 @@ def http_status(r):
 		print(txt_red + "  (warn)\t" + txt_white + "HTTP status code: " + traffic + str(r.status_code) + txt_white)
 
 # Start scanning using a wordlist of names to bruteforce phone numbers
-def scan_wordlist(street, area, wordlist, output):
+def scan_wordlist(wstreet, warea, wwordlist, output):
 
     # Define variables
     numsSeen = set()
     num = set()
 
+    # If we want to output to a html file, ...
+    if output is not None:
+        print("output: " + output)
+        o = open(output, "a")
+        o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + output + "</h1><p>area: " + warea + "</p><p>street: " + wstreet + "</p>")
+
     # Open wordlist
-    with open(wordlist) as f:
+    with open(wwordlist) as f:
         list = f.read().splitlines()
     for name in list:
 
         # Here is where we package our parameters that we will send to 'bt.com', they are put into an array that will be passed to 'requests.get' as params
-        payload = {"Surname": name, "Location": area, "Street": street}
+        payload = {"Surname": name, "Location": warea, "street": wstreet}
 
         # We will wait 15 seconds for a response and try again, if we fail to get a response 3 times we skip that name and move on.
         try:
@@ -135,6 +141,7 @@ def scan_wordlist(street, area, wordlist, output):
                 print(name, end='\r')
                 if output is not None:
                     o.write("returned by: " + name + "<br>")
+    
     # If outputing to a 'html' file, append closing tabs( </...> ) to the end of the file
     if output is not None:
         o.write("</body></html>")
@@ -145,10 +152,16 @@ def scan_wordlist(street, area, wordlist, output):
     return 0
 
 # Start a scan only once using a single surname
-def scan_surname(street, area, surname, output):
+def scan_surname(wstreet, warea, surname, output):
+
+    # If we want to output to a html file, ...
+    if output is not None:
+        print("output: " + output)
+        o = open(output, "a")
+        o.write("<html><body style=\"color: green; background-color: black;\"><h1>" + output + "</h1><p>area: " + warea + "</p><p>street: " + wstreet + "</p>")
 
     # Here is where we package our parameters that we will send to 'bt.com', they are put into an array that will be passed to 'requests.get' as params
-    payload = {"Surname": surname, "Location": area, "Street": street}
+    payload = {"Surname": surname, "Location": warea, "street": wstreet}
 
     # We will wait 15 seconds for a response and try again, if we fail to get a response 3 times we skip that name and move on.
     try:
@@ -241,8 +254,8 @@ class Main(QDialog):
         leftPane.addLayout(LP_row3)
 
         #Right Pane
-        rightPane = QVBoxLayout( self )
-        rightPane.setSpacing(5)
+        #rightPane = QVBoxLayout( self )
+        #rightPane.setSpacing(5)
 
         ##Left Pane Stuff goes here!
 
@@ -250,16 +263,20 @@ class Main(QDialog):
         #leftPane.adLayout()
 
         self.setLayout(leftPane)
-        self.setLayout(rightPane)
-        self.go.clicked.connect(self.start_gui)
-
-    def start_gui(self):
-
+        #self.setLayout(rightPane)
+        
+        self.go.clicked.connect(self.start_scraper)
+    
+    # Prepare to start the scraper with default settings
+    def start_scraper(self):
         wordlist = os.path.dirname(__file__) + "/res/aa_zz.txt"
+        #I'm keeping this for now, but I will remove this before the full release
         output = self.street.text() + ".html"
+        
         print("street: " + self.street.text())
         print("area: " + self.area.text())
-        return scan_wordlist(self.street, self.area, wordlist, output)
+        
+        return scan_wordlist(self.street.text(), self.area.text(), wordlist, output)
 
 # Initialize -- Start Here!
 if __name__ == "__main__":
@@ -296,7 +313,7 @@ if __name__ == "__main__":
     print("THIS PROGRAM IS CURRENTLY IN DEVELOPMENT")
 
     # If there are no recognised arguments given, run the GUI, else run terminal only
-    if (args.street and args.area is None):
+    if (args.street is not None and args.area is not None):
         print("Terminal Only")
         ## Terminal Only
         # If we want to output to a html file, ...
@@ -312,8 +329,12 @@ if __name__ == "__main__":
         ##One person scan
         elif (args.surname is not None):
             sys.exit(scan_surname(args.street, args.area, args.surname, args.output))
+        else:
+            print(txt_red + "(warn)\t" + txt_white + " No Surname or Wordlist provided")
+            exit(1)
     else:
         #GUI
+        print("Starting GUI App")
 
         #Start a QApplication instance called MainActivity
         MainActivity = QApplication([])
