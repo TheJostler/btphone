@@ -2,7 +2,7 @@
 
 By Josjuar Lister 2021-2022
 
-An open source, cross platform application for getting UK phone numbers from the BT phone book.
+Btphone is open source and written in python. It's an OISNT tool for bruteforcing UK phone numbers from the BT phone book.
 
 If you would like to contribute to our project, please contact me by email at josj@wjaag.com
 
