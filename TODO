@@ -8,7 +8,7 @@
 
 5. Create an auto-update tool and make the app check for updates during the initialisation of the btphone-gui.py script
 
-6. Create an "Anti-Spam API" to ensure that not too many requests are made to BT Phone book all at once. (Wouldn't want to inadvertently become a Malware creator).
+6. Create an "Anti-Spam API" to ensure that not too many requests are made to BT Phone book all at once.
 
 7. Spin up an Azure Windows 10 Virtual Cloud Machine and use it to compile all the code into an .exe. Also use a MacBook to compile the App into a version that will work on Apple Computers.
 
